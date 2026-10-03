@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard - HostelHub</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+
+        <!-- NAVBAR -->
+
+        <nav class="navbar">
+
+            <div class="nav-left">
+
+                <div class="brand">
+                    <div class="brand-icon">H</div>
+
+                    <div>
+                        <h2>HostelHub</h2>
+                        <span>Student Portal</span>
+                    </div>
+                </div>
+
+                <div class="nav-links">
+
+                    <a href="#" class="nav-link active">
+                        <span>⌂</span>
+                        Dashboard
+                    </a>
+
+                    <a href="#" class="nav-link">
+                        <span>▣</span>
+                        3D Rooms
+                    </a>
+
+                    <a href="#" class="nav-link">
+                        <span>₹</span>
+                        Mess Wallet
+                    </a>
+
+                    <a href="#" class="nav-link">
+                        <span>✓</span>
+                        Attendance
+                    </a>
+
+                    <a href="#" class="nav-link">
+                        <span>▤</span>
+                        Bills
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="nav-right">
+
+                <div class="notification">
+                    🔔
+                </div>
+
+                <div class="profile">
+
+                    <div class="profile-avatar" id="profileAvatar">
+                        A
+                    </div>
+
+                    <div class="profile-info">
+                        <strong id="studentName">
+                            Student
+                        </strong>
+
+                        <span id="studentId">
+                            Student ID
+                        </span>
+                    </div>
+
+                    <button id="logoutBtn" class="logout-btn">
+                        Logout
+                    </button>
+
+                </div>
+
+            </div>
+
+        </nav>
+
+
+        <!-- MAIN CONTENT -->
+
+        <main class="main-content">
+
+            <div class="welcome-section">
+
+                <div>
+                    <p class="page-label">STUDENT DASHBOARD</p>
+
+                    <h1>
+                        Welcome back,
+                        <span id="welcomeName">Student</span>
+                    </h1>
+
+                    <p class="welcome-text">
+                        Manage your room, mess wallet, attendance
+                        and hostel payments from one place.
+                    </p>
+                </div>
+
+                <button class="room-btn">
+                    Explore 3D Rooms
+                </button>
+
+            </div>
+
+
+            <!-- SUMMARY CARDS -->
+
+            <section class="summary-grid">
+
+                <div class="summary-card">
+
+                    <div class="card-icon blue">
+                        🏠
+                    </div>
+
+                    <div>
+                        <span>Room</span>
+                        <h2>Not Assigned</h2>
+                        <p>Choose your room</p>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="card-icon green">
+                        ₹
+                    </div>
+
+                    <div>
+                        <span>Mess Wallet</span>
+                        <h2>₹2,450</h2>
+                        <p>Available balance</p>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="card-icon purple">
+                        ✓
+                    </div>
+
+                    <div>
+                        <span>Meals This Month</span>
+                        <h2>24</h2>
+                        <p>Meals attended</p>
+                    </div>
+
+                </div>
+
+
+                <div class="summary-card">
+
+                    <div class="card-icon orange">
+                        ₹
+                    </div>
+
+                    <div>
+                        <span>Current Bill</span>
+                        <h2>₹1,280</h2>
+                        <p>View invoice</p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- MAIN GRID -->
+
+            <section class="dashboard-grid">
+
+
+                <!-- ROOM CARD -->
+
+                <div class="dashboard-card room-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <p class="section-label">
+                                ROOM BOOKING
+                            </p>
+
+                            <h2>
+                                Find your perfect room
+                            </h2>
+                        </div>
+
+                        <span class="status available">
+                            Available
+                        </span>
+
+                    </div>
+
+
+                    <div class="room-preview">
+
+                        <div class="room-visual">
+
+                            <div class="room-floor"></div>
+
+                            <div class="room-label">
+                                3D
+                            </div>
+
+                        </div>
+
+
+                        <div class="room-info">
+
+                            <h3>
+                                Explore Hostel Rooms
+                            </h3>
+
+                            <p>
+                                View rooms in 3D, check availability
+                                and choose your preferred room.
+                            </p>
+
+                            <button class="primary-action">
+                                Open 3D Room View →
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ATTENDANCE -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <p class="section-label">
+                                MEAL ATTENDANCE
+                            </p>
+
+                            <h2>
+                                This month
+                            </h2>
+                        </div>
+
+                        <span class="view-link">
+                            View all
+                        </span>
+
+                    </div>
+
+
+                    <div class="attendance-content">
+
+                        <div class="attendance-circle">
+                            <strong>24</strong>
+                            <span>Meals</span>
+                        </div>
+
+                        <div class="meal-details">
+
+                            <div>
+                                <span>Breakfast</span>
+                                <strong>8</strong>
+                            </div>
+
+                            <div>
+                                <span>Lunch</span>
+                                <strong>9</strong>
+                            </div>
+
+                            <div>
+                                <span>Dinner</span>
+                                <strong>7</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- WALLET -->
+
+                <div class="dashboard-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <p class="section-label">
+                                MESS WALLET
+                            </p>
+
+                            <h2>
+                                ₹2,450
+                            </h2>
+                        </div>
+
+                        <span class="wallet-status">
+                            Active
+                        </span>
+
+                    </div>
+
+
+                    <div class="wallet-bar">
+
+                        <div class="wallet-progress"></div>
+
+                    </div>
+
+                    <div class="wallet-info">
+
+                        <span>
+                            Current balance
+                        </span>
+
+                        <span>
+                            ₹2,450
+                        </span>
+
+                    </div>
+
+                    <button class="primary-action full">
+                        + Top Up Wallet
+                    </button>
+
+                </div>
+
+
+                <!-- RECENT ACTIVITY -->
+
+                <div class="dashboard-card activity-card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <p class="section-label">
+                                RECENT ACTIVITY
+                            </p>
+
+                            <h2>
+                                Latest updates
+                            </h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="activity-list">
+
+                        <div class="activity-item">
+
+                            <div class="activity-icon">
+                                ✓
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Lunch attendance recorded
+                                </strong>
+
+                                <span>
+                                    Today · 1:05 PM
+                                </span>
+                            </div>
+
+                            <b>
+                                -₹45
+                            </b>
+
+                        </div>
+
+
+                        <div class="activity-item">
+
+                            <div class="activity-icon">
+                                ₹
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Wallet topped up
+                                </strong>
+
+                                <span>
+                                    Yesterday · 6:30 PM
+                                </span>
+                            </div>
+
+                            <b class="positive">
+                                +₹1,000
+                            </b>
+
+                        </div>
+
+
+                        <div class="activity-item">
+
+                            <div class="activity-icon">
+                                🏠
+                            </div>
+
+                            <div>
+                                <strong>
+                                    Room selection pending
+                                </strong>
+
+                                <span>
+                                    2 days ago
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+    <script>
+        let student = null;
+        try {
+            student = JSON.parse(localStorage.getItem("loggedInStudent"));
+        } catch (e) {
+            student = null;
+        }
+
+        if (!student || !student.studentId) {
+            window.location.href = "index.html";
+        } else {
+            const rawName = (student.name || "Student").trim();
+            const firstName = rawName.split(/\s+/)[0] || "Student";
+
+            document.getElementById("studentName").textContent = rawName;
+            document.getElementById("studentId").textContent = student.studentId;
+            document.getElementById("welcomeName").textContent = firstName;
+            document.getElementById("profileAvatar").textContent = rawName.charAt(0).toUpperCase();
+        }
+
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            localStorage.removeItem("loggedInStudent");
+            window.location.href = "index.html";
+        });
+
+        // Interactive feedback for mock actions
+        document.querySelectorAll(".room-btn, .primary-action").forEach(btn => {
+            btn.addEventListener("click", () => {
+                if (btn.classList.contains("full")) {
+                    alert("Mess Wallet Top-Up portal will open. (Feature coming soon)");
+                } else {
+                    alert("3D Room Tour viewer is loading... (Feature coming soon)");
+                }
+            });
+        });
+
+        const notif = document.querySelector(".notification");
+        if (notif) {
+            notif.addEventListener("click", () => {
+                alert("You have no new notifications.");
+            });
+        }
+    </script>
+</body>
+</html>

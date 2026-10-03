@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="auth-container">
+
+        <div class="auth-left">
+            <div class="brand">
+                <div class="brand-icon">H</div>
+                <div>
+                    <h2>HostelHub</h2>
+                    <p>Smart Hostel Management</p>
+                </div>
+            </div>
+
+            <div class="welcome-content">
+                <span class="tag">STUDENT PORTAL</span>
+
+                <h1>
+                    Your hostel,
+                    <span>simplified.</span>
+                </h1>
+
+                <p>
+                    Manage your room booking, mess wallet,
+                    attendance and hostel services from one place.
+                </p>
+
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon">⌂</div>
+                        <div>
+                            <h3>3D Room Booking</h3>
+                            <p>Explore and choose your room.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">₹</div>
+                        <div>
+                            <h3>Mess Wallet</h3>
+                            <p>Pay only for meals you eat.</p>
+                        </div>
+                    </div>
+
+                    <div class="feature">
+                        <div class="feature-icon">✓</div>
+                        <div>
+                            <h3>Smart Attendance</h3>
+                            <p>Fast and secure meal attendance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="left-footer">
+                <span>© 2026 HostelHub</span>
+                <span>Student Management Portal</span>
+            </div>
+        </div>
+
+
+        <div class="auth-right">
+
+            <div class="auth-card">
+
+                <div class="mobile-brand">
+                    <div class="brand-icon">H</div>
+                    <h2>HostelHub</h2>
+                </div>
+
+                <div class="auth-header">
+                    <h1 id="formTitle">Welcome back</h1>
+                    <p id="formSubtitle">
+                        Sign in to access your student portal
+                    </p>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" id="loginTab">
+                        Login
+                    </button>
+
+                    <button class="tab" id="registerTab">
+                        Register
+                    </button>
+                </div>
+
+
+                <!-- LOGIN FORM -->
+
+                <form id="loginForm" class="auth-form">
+
+                    <div class="form-group">
+                        <label for="loginStudentId">
+                            Student ID or College Email
+                        </label>
+
+                        <input
+                            type="text"
+                            id="loginStudentId"
+                            placeholder="Enter your student ID or college email"
+                            autocomplete="username"
+                        >
+
+                        <small class="error" id="loginStudentIdError"></small>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="label-row">
+                            <label for="loginPassword">
+                                Password
+                            </label>
+
+                            <a href="#" class="forgot" id="forgotPasswordLink">
+                                Forgot password?
+                            </a>
+                        </div>
+
+                        <div class="password-box">
+                            <input
+                                type="password"
+                                id="loginPassword"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                            >
+
+                            <button
+                                type="button"
+                                class="show-password"
+                                data-target="loginPassword"
+                            >
+                                Show
+                            </button>
+                        </div>
+
+                        <small class="error" id="loginPasswordError"></small>
+                    </div>
+
+
+                    <button type="submit" class="primary-btn">
+                        Sign In
+                    </button>
+
+                    <p class="switch-text">
+                        Don't have an account?
+                        <button type="button" id="switchToRegister">
+                            Create account
+                        </button>
+                    </p>
+
+                </form>
+
+
+                <!-- REGISTER FORM -->
+
+                <form id="registerForm" class="auth-form hidden">
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="studentId">
+                                Student ID
+                            </label>
+
+                            <input
+                                type="text"
+                                id="studentId"
+                                placeholder="24BCS031"
+                            >
+
+                            <small class="error" id="studentIdError"></small>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="studentName">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="studentName"
+                                placeholder="Arunkumar K"
+                            >
+
+                            <small class="error" id="studentNameError"></small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="email">
+                            College Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="student@kct.ac.in"
+                        >
+
+                        <small class="error" id="emailError"></small>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="registerPassword">
+                            Password
+                        </label>
+
+                        <div class="password-box">
+                            <input
+                                type="password"
+                                id="registerPassword"
+                                placeholder="Create a password"
+                            >
+
+                            <button
+                                type="button"
+                                class="show-password"
+                                data-target="registerPassword"
+                            >
+                                Show
+                            </button>
+                        </div>
+
+                        <small class="error" id="registerPasswordError"></small>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Confirm your password"
+                        >
+
+                        <small class="error" id="confirmPasswordError"></small>
+                    </div>
+
+
+                    <label class="terms">
+                        <input type="checkbox" id="terms">
+                        <span>
+                            I agree to the hostel management terms and conditions.
+                        </span>
+                    </label>
+
+                    <small class="error" id="termsError"></small>
+
+
+                    <button type="submit" class="primary-btn">
+                        Create Account
+                    </button>
+
+                    <p class="switch-text">
+                        Already have an account?
+                        <button type="button" id="switchToLogin">
+                            Sign in
+                        </button>
+                    </p>
+
+                </form>
+
+
+                <div id="message" class="message"></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
