@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Student Dashboard - HostelHub</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,14 +15,12 @@
     <div class="dashboard-layout">
 
         <!-- NAVBAR -->
-
         <nav class="navbar">
 
             <div class="nav-left">
 
                 <div class="brand">
                     <div class="brand-icon">H</div>
-
                     <div>
                         <h2>HostelHub</h2>
                         <span>Student Portal</span>
@@ -34,14 +29,19 @@
 
                 <div class="nav-links">
 
-                    <a href="#" class="nav-link active">
+                    <a href="dashboard.html" class="nav-link active">
                         <span>⌂</span>
                         Dashboard
                     </a>
 
-                    <a href="#" class="nav-link">
+                    <a href="room-preview.html" class="nav-link">
                         <span>▣</span>
-                        3D Rooms
+                        3D Room Preview
+                    </a>
+
+                    <a href="room-booking.html" class="nav-link">
+                        <span>🛏</span>
+                        Room Booking
                     </a>
 
                     <a href="#" class="nav-link">
@@ -62,7 +62,6 @@
                 </div>
 
             </div>
-
 
             <div class="nav-right">
 
@@ -96,7 +95,6 @@
 
         </nav>
 
-
         <!-- MAIN CONTENT -->
 
         <main class="main-content">
@@ -123,7 +121,6 @@
 
             </div>
 
-
             <!-- SUMMARY CARDS -->
 
             <section class="summary-grid">
@@ -142,7 +139,6 @@
 
                 </div>
 
-
                 <div class="summary-card">
 
                     <div class="card-icon green">
@@ -157,7 +153,6 @@
 
                 </div>
 
-
                 <div class="summary-card">
 
                     <div class="card-icon purple">
@@ -171,7 +166,6 @@
                     </div>
 
                 </div>
-
 
                 <div class="summary-card">
 
@@ -189,11 +183,9 @@
 
             </section>
 
-
             <!-- MAIN GRID -->
 
             <section class="dashboard-grid">
-
 
                 <!-- ROOM CARD -->
 
@@ -217,7 +209,6 @@
 
                     </div>
 
-
                     <div class="room-preview">
 
                         <div class="room-visual">
@@ -229,7 +220,6 @@
                             </div>
 
                         </div>
-
 
                         <div class="room-info">
 
@@ -252,7 +242,6 @@
 
                 </div>
 
-
                 <!-- ATTENDANCE -->
 
                 <div class="dashboard-card">
@@ -274,7 +263,6 @@
                         </span>
 
                     </div>
-
 
                     <div class="attendance-content">
 
@@ -306,7 +294,6 @@
 
                 </div>
 
-
                 <!-- WALLET -->
 
                 <div class="dashboard-card">
@@ -328,7 +315,6 @@
                         </span>
 
                     </div>
-
 
                     <div class="wallet-bar">
 
@@ -354,7 +340,6 @@
 
                 </div>
 
-
                 <!-- RECENT ACTIVITY -->
 
                 <div class="dashboard-card activity-card">
@@ -372,7 +357,6 @@
                         </div>
 
                     </div>
-
 
                     <div class="activity-list">
 
@@ -398,7 +382,6 @@
 
                         </div>
 
-
                         <div class="activity-item">
 
                             <div class="activity-icon">
@@ -420,7 +403,6 @@
                             </b>
 
                         </div>
-
 
                         <div class="activity-item">
 
@@ -450,9 +432,10 @@
 
     </div>
 
-
     <script>
+
         let student = null;
+
         try {
             student = JSON.parse(localStorage.getItem("loggedInStudent"));
         } catch (e) {
@@ -462,37 +445,57 @@
         if (!student || !student.studentId) {
             window.location.href = "index.html";
         } else {
+
             const rawName = (student.name || "Student").trim();
             const firstName = rawName.split(/\s+/)[0] || "Student";
 
             document.getElementById("studentName").textContent = rawName;
             document.getElementById("studentId").textContent = student.studentId;
             document.getElementById("welcomeName").textContent = firstName;
-            document.getElementById("profileAvatar").textContent = rawName.charAt(0).toUpperCase();
+            document.getElementById("profileAvatar").textContent =
+                rawName.charAt(0).toUpperCase();
         }
 
         document.getElementById("logoutBtn").addEventListener("click", function () {
+
             localStorage.removeItem("loggedInStudent");
             window.location.href = "index.html";
+
         });
 
         // Interactive feedback for mock actions
+
         document.querySelectorAll(".room-btn, .primary-action").forEach(btn => {
+
             btn.addEventListener("click", () => {
+
                 if (btn.classList.contains("full")) {
+
                     alert("Mess Wallet Top-Up portal will open. (Feature coming soon)");
+
                 } else {
+
                     alert("3D Room Tour viewer is loading... (Feature coming soon)");
+
                 }
+
             });
+
         });
 
         const notif = document.querySelector(".notification");
+
         if (notif) {
+
             notif.addEventListener("click", () => {
+
                 alert("You have no new notifications.");
+
             });
+
         }
+
     </script>
+
 </body>
 </html>
