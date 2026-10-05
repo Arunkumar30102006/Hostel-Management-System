@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Hostel Room Booking & Interactive Digital Twin</title>
+    <meta name="description" content="Interactive 3D Hostel Room Preview and real-time Room Booking system with wing navigation and digital twin visualization.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="app-header">
+    <div class="header-content">
+        <div class="brand">
+            <span class="brand-icon">🏢</span>
+            <div>
+                <h1>Hostel 3D Digital Twin</h1>
+                <p>Interactive 3D Room Management & Real-time Booking</p>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <span class="stat-label">Total Rooms</span>
+                <span class="stat-val" id="statTotal">0</span>
+            </div>
+            <div class="stat-card stat-available">
+                <span class="stat-label">Available</span>
+                <span class="stat-val" id="statAvailable">0</span>
+            </div>
+            <div class="stat-card stat-booked">
+                <span class="stat-label">Booked</span>
+                <span class="stat-val" id="statBooked">0</span>
+            </div>
+            <div class="stat-card stat-occupancy">
+                <span class="stat-label">Occupancy</span>
+                <span class="stat-val" id="statOccupancy">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DUAL NAVIGATION BAR -->
+    <div class="nav-bar-container">
+        <nav class="main-nav" aria-label="Main Module Navigation">
+            <button type="button" class="nav-tab active" data-tab="preview" id="navBtnPreview">
+                <span class="tab-icon">🏢</span>
+                <span class="tab-text-group">
+                    <span class="tab-title">3D Room Preview</span>
+                    <span class="tab-caption">Digital Twin & Wing Inspection</span>
+                </span>
+                <span class="tab-badge" id="badge3D">3D Model</span>
+            </button>
+            <button type="button" class="nav-tab" data-tab="booking" id="navBtnBooking">
+                <span class="tab-icon">📋</span>
+                <span class="tab-text-group">
+                    <span class="tab-title">Room Booking</span>
+                    <span class="tab-caption">Directory & Reservations</span>
+                </span>
+                <span class="tab-badge count-badge" id="badgeBookingAvail">24 Available</span>
+            </button>
+            <a href="../Hostel-Management-System/student-auth/dashboard.html" class="nav-tab nav-tab-portal" id="navBtnPortal" title="Return to Student Portal">
+                <span class="tab-icon">⌂</span>
+                <span class="tab-text-group">
+                    <span class="tab-title">Student Portal</span>
+                    <span class="tab-caption">Dashboard & Auth</span>
+                </span>
+            </a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+    <!-- ===================================================================
+         VIEW 1: 3D ROOM PREVIEW
+         =================================================================== -->
+    <div id="viewPreview" class="tab-view active">
+        <section class="model-section">
+            <div class="section-title-bar">
+                <div>
+                    <h2>3D Hostel Building Model</h2>
+                    <p class="subtitle">Floating room numbers are pinned to room locations across floors and wings</p>
+                </div>
+                <div class="view-switch-banner">
+                    <button type="button" class="btn btn-primary" id="btnGoToBooking">
+                        📋 Switch to Room Booking ➡️
+                    </button>
+                </div>
+            </div>
+
+            <!-- 3D VIEWER CONTAINER -->
+            <div id="viewer" tabindex="0">
+                <!-- Loading Screen -->
+                <div id="loading" class="loading-overlay">
+                    <div class="loader-spinner"></div>
+                    <div class="loader-text">Loading 3D Hostel Model...</div>
+                    <div class="loader-sub">Preparing digital twin & room coordinates</div>
+                </div>
+
+                <!-- Viewer Top Controls Bar -->
+                <div class="viewer-top-toolbar">
+                    <div class="camera-presets">
+                        <span class="toolbar-label">Camera:</span>
+                        <button type="button" class="btn-preset active" data-view="front">Front Wing</button>
+                        <button type="button" class="btn-preset" data-view="east">East Wing</button>
+                        <button type="button" class="btn-preset" data-view="west">West Wing</button>
+                        <button type="button" class="btn-preset" data-view="back">Back Wing</button>
+                        <button type="button" class="btn-preset" data-view="top">Top View</button>
+                        <button type="button" class="btn-preset" data-view="reset" title="Reset camera">🔄 Reset</button>
+                    </div>
+
+                    <div class="viewer-actions">
+                        <button type="button" id="btnToggleLabels" class="btn-tool" title="Show or hide floating room labels">
+                            👁️ Labels: <span id="labelToggleText">On</span>
+                        </button>
+                        <button type="button" id="btnAutoRotate" class="btn-tool" title="Toggle automatic turntable rotation">
+                            🔄 Rotate
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Viewer Bottom Legend / Status -->
+                <div class="viewer-bottom-bar">
+                    <div class="legend-pills">
+                        <span class="legend-item"><span class="dot dot-avail"></span> Available Room</span>
+                        <span class="legend-item"><span class="dot dot-booked"></span> Booked Room</span>
+                        <span class="legend-item"><span class="dot dot-selected"></span> Selected</span>
+                    </div>
+
+                    <div id="viewerSelectionHint" class="selection-hint">
+                        🖱️ Click any floating room badge or drag to rotate 3D view
+                    </div>
+                </div>
+            </div>
+
+            <!-- Selected Room Quick Action Drawer (Appears when room is clicked in 3D) -->
+            <div id="previewActionDrawer" class="preview-action-drawer" style="display: none;">
+                <div class="drawer-left">
+                    <div class="drawer-room-badge" id="drawerRoomNum">Room 101</div>
+                    <div class="drawer-meta-group">
+                        <span id="drawerRoomMeta" class="drawer-meta-text">Front Wing • Ground Floor • 4 Sharing Room</span>
+                        <span id="drawerRoomStatus" class="drawer-status-pill available">Available</span>
+                    </div>
+                </div>
+                <div class="drawer-actions">
+                    <button type="button" id="btnDrawerBook" class="btn btn-confirm">
+                        ✅ Proceed to Book Room
+                    </button>
+                    <button type="button" id="btnDrawerDismiss" class="btn btn-secondary btn-sm" title="Dismiss">
+                        ✕
+                    </button>
+                </div>
+            </div>
+
+            <div class="interaction-help">
+                <span>🖱️ <strong>Left Click + Drag:</strong> Rotate Building</span>
+                <span>🔍 <strong>Scroll Wheel:</strong> Zoom In / Out</span>
+                <span>🖐️ <strong>Right Click + Drag:</strong> Pan</span>
+                <span>🏷️ <strong>Click Badge:</strong> Select & Inspect Room</span>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===================================================================
+         VIEW 2: ROOM BOOKING
+         =================================================================== -->
+    <div id="viewBooking" class="tab-view">
+        <!-- BOOKING FORM SECTION -->
+        <section id="bookingSection" class="booking-section-wrapper">
+            <div class="booking-header">
+                <div>
+                    <h2>Book <span id="roomNumberHeader" class="highlight-room-num">Room ---</span></h2>
+                    <p id="bookingRoomDetails" class="booking-room-meta">Select a room from the directory below or click 'View in 3D' to inspect</p>
+                </div>
+                <button type="button" id="btnBackToPreview" class="btn btn-secondary btn-sm" title="Return to 3D Digital Twin">
+                    🏢 Open 3D Preview
+                </button>
+            </div>
+
+            <form id="bookingForm" class="booking-form-grid">
+                <input type="hidden" id="roomNumber" name="roomNumber">
+
+                <div class="form-group">
+                    <label for="studentName">Student Full Name</label>
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="e.g. Alex Johnson"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="registerNumber">Registration / Student ID</label>
+                    <input
+                        type="text"
+                        id="registerNumber"
+                        placeholder="e.g. REG-2026-8941"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="checkIn">Check-in Date</label>
+                    <input
+                        type="date"
+                        id="checkIn"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="checkOut">Check-out Date</label>
+                    <input
+                        type="date"
+                        id="checkOut"
+                        required
+                    >
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-confirm">
+                        ✅ Confirm Room Booking
+                    </button>
+                    <button type="button" id="btnCancelForm" class="btn btn-secondary">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+
+            <div id="message" class="booking-message"></div>
+        </section>
+
+        <!-- ROOM DIRECTORY & AVAILABILITY -->
+        <section class="room-section">
+            <div class="section-title-bar">
+                <div>
+                    <h2>Room Directory & Availability</h2>
+                    <p class="subtitle">Choose a room to book or preview its position in the 3D model</p>
+                </div>
+
+                <!-- Filter tabs -->
+                <div class="filter-tabs">
+                    <button type="button" class="filter-btn active" data-filter="all">All Rooms</button>
+                    <button type="button" class="filter-btn" data-filter="available">Available Only</button>
+                    <button type="button" class="filter-btn" data-filter="booked">Booked Only</button>
+                    <button type="button" class="filter-btn" data-filter="ground">Ground Floor</button>
+                    <button type="button" class="filter-btn" data-filter="1st">1st Floor</button>
+                </div>
+            </div>
+
+            <div id="roomGrid" class="room-grid"></div>
+        </section>
+
+        <!-- CURRENT BOOKINGS LIST -->
+        <section class="bookings-section">
+            <div class="section-title-bar">
+                <div>
+                    <h2>Current Hostel Bookings</h2>
+                    <p class="subtitle">Active reservations tracked in real time</p>
+                </div>
+                <button type="button" id="btnClearBookings" class="btn btn-danger-outline" title="Clear all saved bookings">
+                    🗑️ Clear All Bookings
+                </button>
+            </div>
+
+            <div id="bookingList" class="booking-list"></div>
+        </section>
+    </div>
+
+</main>
+
+<footer class="app-footer">
+    <p>3D Hostel Room Management • Digital Twin Visualization & Dedicated Room Booking System</p>
+</footer>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Booking & Directory - HostelHub</title>
+    <meta name="description" content="Hostel Room Booking Portal with real-time availability directory, room reservations, and booking management.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="app-header">
+    <div class="header-content">
+        <div class="brand">
+            <span class="brand-icon">📋</span>
+            <div>
+                <h1>HostelHub Room Booking</h1>
+                <p>Real-time Room Directory & Online Reservation Portal</p>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <span class="stat-label">Total Rooms</span>
+                <span class="stat-val" id="statTotal">24</span>
+            </div>
+            <div class="stat-card stat-available">
+                <span class="stat-label">Available</span>
+                <span class="stat-val" id="statAvailable">24</span>
+            </div>
+            <div class="stat-card stat-booked">
+                <span class="stat-label">Booked</span>
+                <span class="stat-val" id="statBooked">0</span>
+            </div>
+            <div class="stat-card stat-occupancy">
+                <span class="stat-label">Occupancy</span>
+                <span class="stat-val" id="statOccupancy">0%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DUAL NAVIGATION BAR -->
+    <div class="nav-bar-container">
+        <nav class="main-nav" aria-label="Main Module Navigation">
+            <a href="room-preview.html" class="nav-tab" id="navBtnPreview">
+                <span class="tab-icon">🏢</span>
+                <span class="tab-text-group">
+                    <span class="tab-title">3D Room Preview</span>
+                    <span class="tab-caption">Digital Twin & Wing Inspection</span>
+                </span>
+                <span class="tab-badge" id="badge3D">3D Model</span>
+            </a>
+            <a href="room-booking.html" class="nav-tab active" id="navBtnBooking">
+                <span class="tab-icon">📋</span>
+                <span class="tab-text-group">
+                    <span class="tab-title">Room Booking</span>
+                    <span class="tab-caption">Directory & Reservations</span>
+                </span>
+                <span class="tab-badge count-badge" id="badgeBookingAvail">Active</span>
+            </a>
+            <a href="../Hostel-Management-System/student-auth/dashboard.html" class="nav-tab nav-tab-portal" id="navBtnPortal" title="Return to Student Portal">
+                <span class="tab-icon">⌂</span>
+                <span class="tab-text-group">
+                    <span class="tab-title">Student Portal</span>
+                    <span class="tab-caption">Dashboard & Auth</span>
+                </span>
+            </a>
+        </nav>
+    </div>
+</header>
+
+<main>
+
+    <!-- ===================================================================
+         DEDICATED MODULE: ROOM BOOKING
+         =================================================================== -->
+    <div id="viewBooking" class="tab-view active">
+        <!-- BOOKING FORM SECTION -->
+        <section id="bookingSection" class="booking-section-wrapper">
+            <div class="booking-header">
+                <div>
+                    <h2>Book <span id="roomNumberHeader" class="highlight-room-num">Room ---</span></h2>
+                    <p id="bookingRoomDetails" class="booking-room-meta">Select a room from the directory below or click 'View in 3D' to inspect</p>
+                </div>
+                <a href="room-preview.html" id="btnBackToPreview" class="btn btn-secondary btn-sm" title="Return to 3D Digital Twin">
+                    🏢 Open 3D Preview
+                </a>
+            </div>
+
+            <form id="bookingForm" class="booking-form-grid">
+                <input type="hidden" id="roomNumber" name="roomNumber">
+
+                <div class="form-group">
+                    <label for="studentName">Student Full Name</label>
+                    <input
+                        type="text"
+                        id="studentName"
+                        placeholder="e.g. Alex Johnson"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="registerNumber">Registration / Student ID</label>
+                    <input
+                        type="text"
+                        id="registerNumber"
+                        placeholder="e.g. REG-2026-8941"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="checkIn">Check-in Date</label>
+                    <input
+                        type="date"
+                        id="checkIn"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="checkOut">Check-out Date</label>
+                    <input
+                        type="date"
+                        id="checkOut"
+                        required
+                    >
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-confirm">
+                        ✅ Confirm Room Booking
+                    </button>
+                    <button type="button" id="btnCancelForm" class="btn btn-secondary">
+                        Clear Form
+                    </button>
+                </div>
+            </form>
+
+            <div id="message" class="booking-message"></div>
+        </section>
+
+        <!-- ROOM DIRECTORY & AVAILABILITY -->
+        <section class="room-section">
+            <div class="section-title-bar">
+                <div>
+                    <h2>Room Directory & Availability</h2>
+                    <p class="subtitle">Choose a room to book or inspect its physical position in the 3D model</p>
+                </div>
+
+                <!-- Filter tabs -->
+                <div class="filter-tabs">
+                    <button type="button" class="filter-btn active" data-filter="all">All Rooms</button>
+                    <button type="button" class="filter-btn" data-filter="available">Available Only</button>
+                    <button type="button" class="filter-btn" data-filter="booked">Booked Only</button>
+                    <button type="button" class="filter-btn" data-filter="ground">Ground Floor</button>
+                    <button type="button" class="filter-btn" data-filter="1st">1st Floor</button>
+                </div>
+            </div>
+
+            <div id="roomGrid" class="room-grid"></div>
+        </section>
+
+        <!-- CURRENT BOOKINGS LIST -->
+        <section class="bookings-section">
+            <div class="section-title-bar">
+                <div>
+                    <h2>Current Hostel Bookings</h2>
+                    <p class="subtitle">Active student reservations tracked in real time</p>
+                </div>
+                <button type="button" id="btnClearBookings" class="btn btn-danger-outline" title="Clear all saved bookings">
+                    🗑️ Clear All Bookings
+                </button>
+            </div>
+
+            <div id="bookingList" class="booking-list"></div>
+        </section>
+    </div>
+
+</main>
+
+<footer class="app-footer">
+    <p>HostelHub • Module 2: Dedicated Room Booking Portal & Availability Directory</p>
+</footer>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
+</script>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>

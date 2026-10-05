@@ -1,0 +1,20 @@
+{
+  "name": "hostel-management-3d",
+  "version": "1.0.0",
+  "description": "3D Hostel Room Management and Booking System with Floating Room Numbers",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "threejs",
+    "hostel",
+    "booking",
+    "3d"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.186.1"
+  }
+}
