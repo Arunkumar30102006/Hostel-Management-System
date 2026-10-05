@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirecting to 3D Room Preview...</title>
+</head>
+<body>
+    <script>
+        if (window.location.protocol === 'file:') {
+            window.location.href = "../../3D-Model/room-preview.html" + window.location.search;
+        } else {
+            window.location.href = "/room-preview.html" + window.location.search;
+        }
+    </script>
+    <p>Redirecting to <a href="/room-preview.html">3D Room Preview</a>...</p>
+</body>
+</html>
