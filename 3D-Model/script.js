@@ -357,26 +357,40 @@ function createRoomVisuals() {
     if (!viewer || !beaconGroup || !matAvail) return;
 
     rooms.forEach(room => {
+        const isAvail = room.status === "available";
+
         // --- 1. Floating HTML Badge ---
         const labelEl = document.createElement("div");
         labelEl.className = `room-floating-label ${room.status}`;
         labelEl.dataset.room = room.number;
         labelEl.setAttribute("role", "button");
         labelEl.setAttribute("tabindex", "0");
-        labelEl.title = `Room ${room.number} • ${room.wing} (${room.floor})`;
+        labelEl.title = isAvail
+            ? `Click to Book Room ${room.number} • ${room.wing} (${room.floor})`
+            : `Room ${room.number} is Booked • Click to inspect details`;
 
         labelEl.innerHTML = `
-            <div class="label-pill">
+            <div class="label-pill" role="button" aria-label="Book Room ${room.number}">
                 <span class="label-status-dot"></span>
                 <span class="label-room-prefix">Room</span>
                 <span class="label-room-num">${room.number}</span>
+                <span class="label-action-badge">${isAvail ? 'Book 📋' : 'Booked'}</span>
             </div>
         `;
 
-        // Click event on badge
+        // Direct navigation to room booking option on click
         labelEl.addEventListener("click", (e) => {
             e.stopPropagation();
-            selectRoom(room.number, true);
+            labelEl.classList.add("clicked");
+            goToRoomBooking(room.number);
+        });
+
+        // Keyboard accessibility
+        labelEl.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                goToRoomBooking(room.number);
+            }
         });
 
         viewer.appendChild(labelEl);
@@ -404,8 +418,20 @@ function createRoomVisuals() {
         ringMesh.position.copy(room.position).addScaledVector(normalVec, 0.1);
         ringMesh.lookAt(lookTarget);
 
+        // Invisible larger hit mesh for clicking the 3D model anchor directly
+        const hitGeo = new THREE.SphereGeometry(3.0, 8, 8);
+        const hitMat = new THREE.MeshBasicMaterial({ visible: false, transparent: true, opacity: 0 });
+        const hitMesh = new THREE.Mesh(hitGeo, hitMat);
+        hitMesh.position.copy(room.position);
+
+        // Tag all objects with roomNumber for 3D raycaster
+        beaconMesh.userData.roomNumber = room.number;
+        ringMesh.userData.roomNumber = room.number;
+        hitMesh.userData.roomNumber = room.number;
+
         beaconGroup.add(beaconMesh);
         beaconGroup.add(ringMesh);
+        beaconGroup.add(hitMesh);
 
         // Floating offset for label: float 2.2 units above anchor in Y
         const floatingPos = room.position.clone();
@@ -580,18 +606,69 @@ if (btnDrawerDismiss) {
     });
 }
 
+/**
+ * Direct navigation to respective room booking option from 3D model
+ */
+function goToRoomBooking(roomNumber) {
+    if (!roomNumber) return;
+    const room = rooms.find(r => r.number === roomNumber);
+    if (!room) return;
+
+    selectedRoomNumber = roomNumber;
+
+    // Visual feedback in 3D scene (highlight active beacon & label)
+    roomLabels.forEach(r => {
+        if (r.number === roomNumber) {
+            r.element.classList.add("selected");
+            if (r.meshBeacon) r.meshBeacon.material = matSelected;
+        } else {
+            r.element.classList.remove("selected");
+            const rData = rooms.find(item => item.number === r.number);
+            if (r.meshBeacon) {
+                r.meshBeacon.material = rData && rData.status === "available" ? matAvail : matBooked;
+            }
+        }
+    });
+
+    if (viewBooking) {
+        // Combined single-page mode (index.html): switch tab and populate form
+        switchTab("booking");
+        selectRoom(roomNumber, false);
+
+        const bookingSection = document.getElementById("bookingSection");
+        if (bookingSection) {
+            bookingSection.style.display = "";
+            setTimeout(() => {
+                bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 80);
+        }
+
+        if (room.status === "available") {
+            const studentNameInput = document.getElementById("studentName");
+            if (studentNameInput) {
+                setTimeout(() => studentNameInput.focus(), 320);
+            }
+            showToast(`Opened booking form for Room ${roomNumber}`, "info");
+        } else {
+            showToast(`Room ${roomNumber} is already booked`, "error");
+        }
+
+        if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, "", `${window.location.pathname}?tab=booking&room=${encodeURIComponent(roomNumber)}`);
+        }
+    } else {
+        // Dedicated 3D Preview page (room-preview.html): navigate directly to room-booking.html
+        showToast(`Opening booking portal for Room ${roomNumber}...`, "info");
+        setTimeout(() => {
+            window.location.href = `room-booking.html?room=${encodeURIComponent(roomNumber)}`;
+        }, 120);
+    }
+}
+
 if (btnDrawerBook) {
     btnDrawerBook.addEventListener("click", () => {
-        if (viewBooking) {
-            switchTab("booking");
-            const bookingSection = document.getElementById("bookingSection");
-            if (bookingSection) {
-                bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-            const studentNameInput = document.getElementById("studentName");
-            if (studentNameInput) studentNameInput.focus();
-        } else {
-            window.location.href = `room-booking.html?room=${selectedRoomNumber}`;
+        if (selectedRoomNumber) {
+            goToRoomBooking(selectedRoomNumber);
         }
     });
 }
@@ -605,6 +682,27 @@ function selectRoom(roomNumber, flyCamera = false) {
     const room = rooms.find(r => r.number === roomNumber);
 
     if (!room) return;
+
+    // Ensure booking section form is visible if previously closed
+    const bookingSection = document.getElementById("bookingSection");
+    if (bookingSection) {
+        bookingSection.style.display = "";
+    }
+
+    // Ensure room is visible in directory filter
+    if (currentFilter !== "all") {
+        const matchesFilter = (currentFilter === "available" && room.status === "available") ||
+                              (currentFilter === "booked" && room.status === "booked") ||
+                              (currentFilter === "ground" && room.floor === "Ground Floor") ||
+                              (currentFilter === "1st" && room.floor === "1st Floor");
+        if (!matchesFilter) {
+            currentFilter = "all";
+            document.querySelectorAll(".filter-btn").forEach(b => {
+                b.classList.toggle("active", b.dataset.filter === "all");
+            });
+            renderRoomGrid();
+        }
+    }
 
     // Highlight floating label
     roomLabels.forEach(r => {
@@ -1160,6 +1258,59 @@ function showToast(text, type = "info") {
     }, 3200);
 }
 
+// Raycaster for clicking directly on 3D room beacons or building anchors in the 3D canvas
+if (viewer && renderer) {
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+    let pointerDownPos = { x: 0, y: 0, time: 0 };
+
+    viewer.addEventListener("pointerdown", (e) => {
+        pointerDownPos = { x: e.clientX, y: e.clientY, time: Date.now() };
+    });
+
+    viewer.addEventListener("pointerup", (e) => {
+        // Disregard drags / orbiting motions
+        const dx = Math.abs(e.clientX - pointerDownPos.x);
+        const dy = Math.abs(e.clientY - pointerDownPos.y);
+        const dt = Date.now() - pointerDownPos.time;
+        if (dx > 6 || dy > 6 || dt > 400) return;
+
+        // Disregard clicks on UI overlays/toolbars
+        if (e.target !== renderer.domElement) return;
+
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        if (beaconGroup) {
+            const intersects = raycaster.intersectObjects(beaconGroup.children, true);
+            if (intersects.length > 0) {
+                for (let i = 0; i < intersects.length; i++) {
+                    const rNum = intersects[i].object.userData?.roomNumber;
+                    if (rNum) {
+                        goToRoomBooking(rNum);
+                        break;
+                    }
+                }
+            }
+        }
+    });
+
+    viewer.addEventListener("pointermove", (e) => {
+        if (!beaconGroup || !camera || !renderer) return;
+        if (e.target !== renderer.domElement) return;
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(beaconGroup.children, true);
+        const hasHit = intersects.some(item => item.object.userData?.roomNumber);
+        renderer.domElement.style.cursor = hasHit ? "pointer" : "grab";
+    });
+}
+
 // ==========================================================================
 // 13. WINDOW RESIZE & ANIMATION LOOP
 // ==========================================================================
@@ -1228,16 +1379,27 @@ function handleInitialParams() {
 
     if (roomParam) {
         setTimeout(() => {
-            selectRoom(roomParam, !!viewer);
-            if (!viewer && bookingForm) {
+            const isBookingActive = !viewPreview || (viewBooking && viewBooking.classList.contains("active")) || tabParam === "booking";
+
+            if (isBookingActive && viewPreview && viewBooking && (!tabParam || tabParam !== "preview")) {
+                switchTab("booking");
+            }
+
+            selectRoom(roomParam, !isBookingActive && !!viewer);
+
+            if (isBookingActive) {
                 const bookingSection = document.getElementById("bookingSection");
                 if (bookingSection) {
+                    bookingSection.style.display = "";
                     bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
                 }
-                const nameInput = document.getElementById("studentName");
-                if (nameInput) nameInput.focus();
+                const room = rooms.find(r => r.number === roomParam);
+                if (room && room.status === "available") {
+                    const nameInput = document.getElementById("studentName");
+                    if (nameInput) nameInput.focus();
+                }
             }
-        }, 400);
+        }, 350);
     }
 }
 
